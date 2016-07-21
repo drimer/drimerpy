@@ -4,8 +4,7 @@ import uuid
 
 import pytest
 
-from debugging import enable_logging_to_file
-
+from drimerpy.debugging import enable_logging_to_file
 
 
 @pytest.fixture

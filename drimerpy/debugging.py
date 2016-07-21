@@ -1,7 +1,8 @@
 import logging
 
-import config
+from drimerpy import config
 
+__all__ = ('enable_logging_to_file',)
 
 _handler_paths = set()
 
