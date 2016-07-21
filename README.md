@@ -1,2 +1,2 @@
 # drimerpy
-Collection of util functions useful to me
+Collection of util functions useful to me.
