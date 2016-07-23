@@ -4,7 +4,7 @@ from drimerpy import config
 
 __all__ = ('enable_logging_to_file',)
 
-_handler_paths = set()
+_handler_paths = {}
 
 
 def enable_logging_to_file(filepath=config.logging_file_path):
@@ -20,7 +20,7 @@ def enable_logging_to_file(filepath=config.logging_file_path):
         new_handler = logging.FileHandler(filepath)
         try:
             logging.root.addHandler(new_handler)
-            _handler_paths.add(filepath)
+            _handler_paths[filepath] = new_handler
         except:
             raise
 
@@ -34,4 +34,9 @@ def disable_logging_to_file(filepath=config.logging_file_path):
     :param filepath: File path for which we want to stop duplicating logs to.
     :return:
     """
-    raise NotImplementedError
+
+    handler = _handler_paths.get(filepath)
+    if handler is None:
+        return
+
+    logging.root.removeHandler(handler)

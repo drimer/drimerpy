@@ -4,7 +4,7 @@ import uuid
 
 import pytest
 
-from drimerpy.debugging import enable_logging_to_file
+from drimerpy.debugging import enable_logging_to_file, disable_logging_to_file
 
 
 @pytest.fixture
@@ -25,6 +25,14 @@ def temp_file_path(request, temp_file_content):
     request.addfinalizer(finaliser)
 
     return path
+
+
+@pytest.fixture
+def nonexistent_filepath():
+    while True:
+        path = '/tmp/{}'.format(uuid.uuid4())
+        if not os.path.exists(path):
+            return path
 
 
 def test_enable_logging_to_non_existing_file():
@@ -63,4 +71,20 @@ def test_enable_logging_to_existing_file(temp_file_path, temp_file_content):
     assert second_line in content
 
 
+def test_disable_logging_to_file(nonexistent_filepath):
+    enable_logging_to_file(nonexistent_filepath)
 
+    logged_line = 'Green banana'
+    logger = logging.getLogger('disable_lodding')
+    logger.warning(logged_line)
+
+    disable_logging_to_file(nonexistent_filepath)
+
+    not_logged_line = 'Orange apple'
+    logger.warning(logged_line)
+
+    with open(nonexistent_filepath, 'r') as f:
+        content = ''.join(f.readlines())
+
+    assert logged_line in content
+    assert not_logged_line not in content
